@@ -13,8 +13,8 @@
         </thead>
 
         <tbody>
-          <product
-            v-for="product in product"
+          <Product
+            v-for="product in products"
             :key="product.id"
             :product="product"
             @onDelete="onDelete"
@@ -27,14 +27,14 @@
 </template>
 
 <script>
-import product from "./Product";
+import Product from "./Product";
 export default {
   name: "ProductList",
   components: {
-    product
+    Product
   },
   props: {
-    product: {
+    products: {
       type: Array
     }
   },
