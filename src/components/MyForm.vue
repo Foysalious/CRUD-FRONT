@@ -3,35 +3,35 @@
     <form class="ui form">
       <div class="fields">
         <div class="four wide field">
-          <label>First Name</label>
+          <label>Title</label>
           <input
             type="text"
-            name="first_name"
-            placeholder="First Name"
+            name="title"
+            placeholder="Title"
             @change="handleChange"
-            :value="form.first_name"
+            :value="form.title"
           />
         </div>
 
         <div class="four wide field">
-          <label>Last Name</label>
+          <label>Description</label>
           <input
             type="text"
-            name="last_name"
-            placeholder="Last Name"
+            name="description"
+            placeholder="description"
             @change="handleChange"
-            :value="form.last_name"
+            :value="form.description"
           />
         </div>
 
         <div class="six wide field">
-          <label>E-mail</label>
+          <label>Price</label>
           <input
-            type="email"
-            name="email"
-            placeholder="joe@gmail.com"
+            type="text"
+            name="price"
+            placeholder="Enter the Price"
             @change="handleChange"
-            :value="form.email"
+            :value="form.price"
           />
         </div>
 
@@ -85,20 +85,20 @@ export default {
     },
     formValidation() {
       // first name
-      if (document.getElementsByName("first_name")[0].value === "") {
-        alert("Enter first name");
+      if (document.getElementsByName("title")[0].value === "") {
+        alert("Enter Title");
         return false;
       }
 
       // last name
-      if (document.getElementsByName("last_name")[0].value === "") {
-        alert("Enter last name");
+      if (document.getElementsByName("description")[0].value === "") {
+        alert("Enter Description");
         return false;
       }
 
       // email
-      if (document.getElementsByName("email")[0].value === "") {
-        alert("Enter email");
+      if (document.getElementsByName("price")[0].value === "") {
+        alert("Enter price");
         return false;
       }
 
@@ -106,9 +106,9 @@ export default {
     },
     clearFormFields() {
       // clear form data
-      this.form.first_name = "";
-      this.form.last_name = "";
-      this.form.email = "";
+      this.form.title = "";
+      this.form.description = "";
+      this.form.price = "";
       this.form.isEdit = false;
 
       // clear form fields

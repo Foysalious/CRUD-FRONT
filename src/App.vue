@@ -2,15 +2,15 @@
   <div id="app">
     <div class="ui fixed inverted menu vue-color">
       <div class="ui container">
-        <a href="#" class="header item">Vue JS CRUD with Laravel API</a>
+        <a href="#" class="header item"> VUE CRUD with Laravel API  </a>
       </div>
     </div>
 
     <div class="ui main container">
       <MyForm :form="form" @onFormSubmit="onFormSubmit" />
       <Loader v-if="loader" />
-      <CustomerList
-        :customers="customers"
+      <ProductList
+        :products="products"
         @onDelete="onDelete"
         @onEdit="onEdit"
       />
@@ -21,72 +21,72 @@
 <script>
 import axios from "axios";
 import MyForm from "./components/MyForm";
-import CustomerList from "./components/CustomerList";
+import ProductList from "./components/ProductList";
 import Loader from "./components/Loader";
 
 export default {
   name: "App",
   components: {
     MyForm,
-    CustomerList,
+    ProductList,
     Loader
   },
   data() {
     return {
-      url: "http://localhost/laravel-rest-api/public/api/customers",
-      customers: [],
-      form: { first_name: "", last_name: "", email: "", isEdit: false },
+      url: "http://localhost:8000/api/Product",
+      products: [],
+      form: { title: "", description: "", price: "", isEdit: false },
       loader: false
     };
   },
   methods: {
-    getCustomers() {
+    getProducts() {
       this.loader = true;
 
       axios.get(this.url).then(data => {
-        this.customers = data.data;
+        this.products = data.data;
         this.loader = false;
       });
     },
-    deleteCustomer(id) {
+    deleteProduct(id) {
       this.loader = true;
 
       axios
         .delete(`${this.url}/${id}`)
         .then(() => {
-          this.getCustomers();
+          this.getProducts();
         })
         .catch(e => {
           alert(e);
         });
     },
-    createCustomer(data) {
+    createProduct(data) {
       this.loader = true;
 
       axios
         .post(this.url, {
-          first_name: data.first_name,
-          last_name: data.last_name,
-          email: data.email
+          title: data.title,
+          description: data.description,
+          price: data.price
         })
         .then(() => {
-          this.getCustomers();
+          this.getProducts();
         })
         .catch(e => {
           alert(e);
         });
     },
-    editCustomer(data) {
+    editProduct(data) {
       this.loader = true;
 
       axios
         .put(`${this.url}/${data.id}`, {
-          first_name: data.first_name,
-          last_name: data.last_name,
-          email: data.email
+          title: data.title,
+          description: data.description,
+          price: data.price
         })
         .then(() => {
-          this.getCustomers();
+          this.getProducts();
         })
         .catch(e => {
           alert(e);
@@ -95,7 +95,7 @@ export default {
     onDelete(id) {
       // window.console.log("app delete " + id);
 
-      this.deleteCustomer(id);
+      this.deleteProduct(id);
     },
     onEdit(data) {
       // window.console.log("app edit ", data);
@@ -107,16 +107,16 @@ export default {
       // window.console.log("app onFormSubmit", data);
 
       if (data.isEdit) {
-        // call edit customer
-        this.editCustomer(data);
+        // call edit product
+        this.editProduct(data);
       } else {
-        // call create customer
-        this.createCustomer(data);
+        // call create product
+        this.createProduct(data);
       }
     }
   },
   created() {
-    this.getCustomers();
+    this.getProducts();
   }
 };
 </script>
