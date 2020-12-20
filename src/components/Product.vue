@@ -12,13 +12,13 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
   name: "Product",
   props: {
-    product: {
-      type: Object
-    }
+    product: [],
   },
+  
   methods: {
     onDelete() {
       // window.console.log("product delete " + this.product.id);

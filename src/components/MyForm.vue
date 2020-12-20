@@ -35,6 +35,12 @@
           />
         </div>
 
+
+         <div class="six wide field">
+           <input type="file" name="image" @change="onFileChange"
+            :value="form.image">          
+        </div>     
+
         <div class="two wide field">
           <button :class="btnClass" @click="onFormSubmit">
             {{ btnName }}
@@ -51,15 +57,21 @@ export default {
   data() {
     return {
       btnName: "Save",
-      btnClass: "ui primary button submit-button"
+      btnClass: "ui primary button submit-button",
+      
     };
   },
   props: {
     form: {
-      type: Object
-    }
+      type: Object,
+      image: "",
+    },
   },
   methods: {
+    onFileChange(e) {
+      console.log(e)
+            this.image = e.target.files[0];
+        },
     handleChange(event) {
       const { name, value } = event.target;
       let form = this.form;
@@ -106,21 +118,21 @@ export default {
     },
     clearFormFields() {
       // clear form data
-      this.form.title = "";
-      this.form.description = "";
-      this.form.price = "";
+      // this.form.title = "";
+      // this.form.description = "";
+      // this.form.price = "";
       this.form.isEdit = false;
 
       // clear form fields
       document.querySelector(".form").reset();
-    }
+    },
   },
   updated() {
     if (this.form.isEdit) {
       this.btnName = "Update";
       this.btnClass = "ui orange button submit-button";
     }
-  }
+  },
 };
 </script>
 

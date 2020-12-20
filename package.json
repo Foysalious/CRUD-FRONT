@@ -9,8 +9,10 @@
   },
   "dependencies": {
     "axios": "^0.19.2",
+    "bootstrap": "^5.0.0-beta1",
     "core-js": "^3.8.1",
-    "vue": "^2.6.12"
+    "vue": "^2.6.12",
+    "vuetify": "^2.3.21"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.5.9",

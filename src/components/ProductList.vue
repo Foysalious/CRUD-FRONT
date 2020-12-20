@@ -1,53 +1,42 @@
 <template>
   <div class="product-list">
     <div class="data">
-      <table class="ui celled table">
-        <thead>
-          <tr>
-            <th style="width: 50px; text-align: center;">#</th>
-            <th>Title</th>
-            <th>Description</th>
-            <th>Price</th>
-            <th style="width: 148px;">Action</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          <Product
-            v-for="product in products"
-            :key="product.id"
-            :product="product"
-            @onDelete="onDelete"
-            @onEdit="onEdit"
-          />
-        </tbody>
-      </table>
+      
     </div>
   </div>
 </template>
 
 <script>
-import Product from "./Product";
+import axios from "axios";
 export default {
-  name: "ProductList",
-  components: {
-    Product
+  data() {
+    return {
+      product: [],
+      dialog: false,
+    };
   },
-  props: {
-    products: {
-      type: Array
-    }
+
+  created() {
+    this.initialize();
   },
   methods: {
-    onDelete(id) {
-      // window.console.log("product list delete " + id);
-      this.$emit("onDelete", id);
+    initialize() {
+      axios.get("http://127.0.0.1:8000/api/Product", {}).then((res) => {
+        this.product = res.data.product;
+      });
     },
-    onEdit(data) {
-      // window.console.log("product list edit " + data);
-      this.$emit("onEdit", data);
+    deleteItem(item){
+      console.log(item.id)
+      axios.post(`http://127.0.0.1:8000/api/Product/delete/${item.id}`,{})
+      .then( res => {
+        this.product.filter( (value,index) => {
+          if( res.data.product.id == value.id ){
+            return this.product.splice(index,1)
+          }
+        })
+      })
     }
-  }
+  },
 };
 </script>
 
