@@ -16,16 +16,20 @@
             <th>Title</th>
             <th>Description</th>
             <th>Price</th>
+            <th>Image</th>
             <th style="width: 148px">Action</th>
           </tr>
         </thead>
 
         <tbody>
-          <tr v-for="item in product" :key="item.id">
+          <tr v-for="item in product.data" :key="item.id">
             <td>{{ item.id }}</td>
             <td>{{ item.title }}</td>
             <td>{{ item.description }}</td>
             <td>{{ item.price }}</td>
+            <td>
+              <img :src="item.image" width="50px" alt="" />
+            </td>
             <td>
               <v-dialog v-model="dialog" width="500">
                 <template v-slot:activator="{ on, attrs }">
@@ -64,6 +68,19 @@
                           required
                           v-model="editedItem.price"
                         ></v-text-field>
+                      </v-col>
+                      <v-col md="12">
+                        <v-img
+                          max-height="100"
+                          max-width="100"
+                          :src="editedItem.image"
+                        ></v-img>
+                        <v-file-input
+                          label="File input"
+                          name="image"
+                          v-model="editedItem.image"
+                          @change="onChange"
+                        ></v-file-input>
                       </v-col>
                     </v-row>
                   </form>
@@ -109,13 +126,14 @@ export default {
       url: "http://localhost:8000/api/Product",
       form: { title: "", description: "", price: "", image: "", isEdit: false },
       loader: false,
-      image: "",
       product: [],
       dialog: false,
+      image:"",
       editedItem: {
         title: "",
         description: "",
         price: "",
+        image: "",
       },
     };
   },
@@ -124,24 +142,38 @@ export default {
     this.initialize();
   },
   methods: {
+    initialize() {
+      axios.get("http://127.0.0.1:8000/api/Product", {}).then((res) => {
+        this.product = res.data.product;
+      });
+    },
     
+    onChange(e) {
+      console.log(e)
+            this.editedItem.image = e;
+        },
     edit(item) {
       this.editedItem = Object.assign({}, item);
       this.dialog = true;
     },
     saveData() {
       let id = this.editedItem.id;
+      let form = new FormData();
+      form.append("title", this.editedItem.title);
+      form.append("description", this.editedItem.description);
+      form.append("price", this.editedItem.price);
+      form.append("image", this.editedItem.image);
       axios
-        .post(`http://127.0.0.1:8000/api/Product/update/${id}`, {
-          title: this.editedItem.title,
-          description: this.editedItem.description,
-          price: this.editedItem.price,
+        .post(`http://127.0.0.1:8000/api/Product/update/${id}`,form,{
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         })
         .then((res) => {
-          this.product.filter((value, index) => {
+          this.product.data.filter((value, index) => {
             if (res.data.product.id == value.id) {
               this.dialog = false;
-              return this.product.splice(index, 1, res.data.product);
+              return this.product.data.splice(index, 1, res.data.product);
             }
           });
         });
@@ -149,19 +181,15 @@ export default {
     showModal() {
       this.dialog = true;
     },
-    initialize() {
-      axios.get("http://127.0.0.1:8000/api/Product", {}).then((res) => {
-        this.product = res.data.product;
-      });
-    },
+
     deleteItem(item) {
       axios
         .post(`http://127.0.0.1:8000/api/Product/delete/${item.id}`, {})
         .then((res) => {
           (this.loader = false),
-            this.product.filter((value, index) => {
+            this.product.data.filter((value, index) => {
               if (res.data.product.id == value.id) {
-                return this.product.splice(index, 1);
+                return this.product.data.splice(index, 1);
               }
             });
         });
@@ -176,30 +204,27 @@ export default {
           alert(e);
         });
     },
+
     createProduct(data) {
       this.loader = true;
-      console.log(data);
-      // axios
-      //   .post(
-      //     "http://127.0.0.1:8000/api/Product",
-      //     {
-      //       title: data.title,
-      //       description: data.description,
-      //       price: data.price,
-      //       image: data.image,
-      //     },
-      //     {
-      //       headers: {
-      //         "Content-Type": "multipart/form-data",
-      //       },
-      //     }
-      //   )
-      //   .then((res) => {
-      //     (this.loader = false), this.product.push(res.data.product);
-      //   })
-      //   .catch((e) => {
-      //     alert(e);
-      //   });
+      let form = new FormData();
+      form.append("title", data.title);
+      form.append("description", data.description);
+      form.append("price", data.price);
+      form.append("image", data.image);
+      axios
+        .post("http://127.0.0.1:8000/api/Product", form, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((res) => {
+          this.loader = false;
+          this.product.data.push(res.data.product);
+        })
+        .catch((e) => {
+          alert(e);
+        });
     },
 
     onDelete(id) {

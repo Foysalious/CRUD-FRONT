@@ -1,6 +1,6 @@
 <template>
-  <div class="my-form">
-    <form class="ui form">
+  <div class="my-form"> 
+    <form class="ui form" enctype="multipart/form-data">
       <div class="fields">
         <div class="four wide field">
           <label>Title</label>
@@ -35,11 +35,16 @@
           />
         </div>
 
-
-         <div class="six wide field">
-           <input type="file" name="image" @change="onFileChange"
-            :value="form.image">          
-        </div>     
+        <div class="six wide field">
+          <label>Image</label>
+          <input
+            type="file"
+            name="image"
+            placeholder="File"
+            @change="onChange"
+            :value="form.image"
+          />
+        </div>
 
         <div class="two wide field">
           <button :class="btnClass" @click="onFormSubmit">
@@ -58,20 +63,17 @@ export default {
     return {
       btnName: "Save",
       btnClass: "ui primary button submit-button",
-      
     };
   },
   props: {
     form: {
       type: Object,
-      image: "",
     },
   },
   methods: {
-    onFileChange(e) {
-      console.log(e)
-            this.image = e.target.files[0];
-        },
+    onChange(e){
+      this.form.image = e.target.files[0]
+    },
     handleChange(event) {
       const { name, value } = event.target;
       let form = this.form;
